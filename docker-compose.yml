@@ -1,0 +1,32 @@
+# Docker Compose Configuration for Bhumi AI Platform
+# This file sets up PostgreSQL database in Docker
+# Usage: docker-compose up -d (to start) | docker-compose down (to stop)
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:15-alpine
+    container_name: bhumi-postgres
+    environment:
+      # Database credentials - change these if needed
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bhumi_ai
+    ports:
+      # Expose PostgreSQL on port 5433 (to avoid conflict with local PostgreSQL on 5432)
+      - "5433:5432"
+    volumes:
+      # Persist database data even if container stops
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # Check if database is ready
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  # Named volume for database persistence
+  postgres_data:

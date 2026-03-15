@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-earth-50 text-earth-900 antialiased overflow-x-hidden;
+    background-image: radial-gradient(at 100% 100%, #f0fdf4 0, transparent 50%),
+      radial-gradient(at 0% 0%, #fff7ed 0, transparent 50%);
+  }
+}
+
+@layer components {
+
+  /* Premium Glassmorphism Card */
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl transition-all duration-300;
+  }
+
+  .glass-card:hover {
+    @apply shadow-2xl border-white/40 -translate-y-1;
+  }
+
+  /* Animated Button */
+  .btn-premium {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden flex items-center justify-center gap-2 active:scale-95;
+  }
+}
+
+/* Custom Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-earth-100/50 rounded-full hover:bg-earth-200/50 transition-colors;
+}
+
+/* Fix for Safari & Standard blur */
+.backdrop-blur-lg {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
