@@ -2,6 +2,9 @@ import express, { Request, Response } from 'express';
 import { pool } from '../db/connection';
 import { authenticateToken } from '../middleware/auth';
 import { calculateEligibilityScore } from '../utils/schemeMatcher';
+import axios from 'axios';
+
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5000';
 
 const router = express.Router();
 
@@ -251,19 +254,39 @@ router.post('/:id/land-details', authenticateToken, async (req: Request, res: Re
       farmerId = newFarmer.rows[0].id;
     }
 
-    // 2. Create verification record (Linked to specific plot/Khasra)
-    // Mock AI Confidence (random between 0.7 and 0.99)
-    const mockConfidence = (Math.random() * (0.99 - 0.7) + 0.7).toFixed(2);
+    // 2. Call AI Service for Real Verification
+    let aiConfidence = 0.5;
+    let status = 'pending';
+    let notes = 'AI verification service error';
+    let findings = [];
 
-    // Auto-verify if confidence is high, else pending
-    const status = parseFloat(mockConfidence) > 0.85 ? 'verified' : 'pending';
-    const notes = status === 'verified' ? 'Auto-verified by Bhumi AI' : 'Manual review required';
+    try {
+      // image_url in land-details is actually the base64 string from frontend
+      // Strip data:image/jpeg;base64, prefix if present
+      const base64Data = image_url.includes(',') ? image_url.split(',')[1] : image_url;
+
+      const aiResponse = await axios.post(`${AI_SERVICE_URL}/verify-document`, {
+        image: base64Data,
+        doc_type: 'land boundary/property image'
+      });
+
+      const aiResult = aiResponse.data;
+      aiConfidence = (aiResult.genuine_probability / 100) || 0;
+      status = aiResult.is_likely_fake ? 'pending' : 'verified';
+      notes = aiResult.summary || (status === 'verified' ? 'Verified by Bhumi AI Vision' : 'Flagged for manual review');
+      findings = aiResult.findings || [];
+    } catch (aiError: any) {
+      console.error('AI Service Error:', aiError.message);
+      // Fallback to pending if AI service is down
+      status = 'pending';
+      notes = 'AI service unavailable. Queueing for manual review.';
+    }
 
     const verificationResult = await pool.query(
       `INSERT INTO land_verifications (farmer_id, image_url, status, ai_confidence, notes, khasra_number, latitude, longitude)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
-      [farmerId, image_url || '', status, mockConfidence, notes, khasra_number, latitude, longitude]
+      [farmerId, image_url || '', status, aiConfidence.toFixed(2), notes, khasra_number, latitude, longitude]
     );
 
     // 3. Update farmer status if auto-verified (just to show activity)

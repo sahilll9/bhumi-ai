@@ -182,19 +182,26 @@ export default function PitchDeckPage() {
             {/* Background Gradient */}
             <div className={`absolute inset-0 bg-gradient-to-br ${slide.color} transition-colors duration-1000`} />
 
-            {/* Slide Navigation Header */}
-            <div className="absolute top-20 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+            {/* Solid Premium "Notch" Navigation */}
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 z-40 px-8 py-4 bg-white/60 backdrop-blur-2xl border border-white/50 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-4">
                 {slides.map((_, idx) => (
-                    <div
+                    <button
                         key={idx}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? 'w-8 bg-earth-600' : 'w-2 bg-earth-200'
+                        onClick={() => {
+                            setDirection(idx > currentSlide ? 1 : -1);
+                            setCurrentSlide(idx);
+                        }}
+                        className={`h-3 rounded-full transition-all duration-700 ease-out ${idx === currentSlide
+                            ? 'w-12 bg-earth-900 shadow-[0_0_15px_rgba(31,41,23,0.4)]'
+                            : 'w-3 bg-earth-200 hover:bg-earth-300'
                             }`}
+                        title={`Go to Slide ${idx + 1}`}
                     />
                 ))}
             </div>
 
-            {/* Main Content Area */}
-            <div className="relative z-10 container mx-auto px-6 h-[calc(100vh-10rem)] flex items-center justify-center">
+            {/* Main Content Area - Scaled Up */}
+            <div className="relative z-10 container mx-auto px-8 h-[calc(100vh-8rem)] flex items-center justify-center">
                 <AnimatePresence initial={false} custom={direction}>
                     <motion.div
                         key={currentSlide}
@@ -204,26 +211,26 @@ export default function PitchDeckPage() {
                         animate="center"
                         exit="exit"
                         transition={{
-                            x: { type: "spring", stiffness: 300, damping: 30 },
-                            opacity: { duration: 0.2 }
+                            x: { type: "spring", stiffness: 200, damping: 25 },
+                            opacity: { duration: 0.3 }
                         }}
-                        className="w-full max-w-5xl"
+                        className="w-full max-w-7xl"
                     >
-                        <div className="glass-card p-12 rounded-[2rem] shadow-2xl relative overflow-hidden">
-                            <div className="flex flex-col md:flex-row items-center gap-12">
-                                <div className="flex-1">
+                        <div className="glass-card p-16 rounded-[3rem] shadow-[0_32px_64px_rgba(0,0,0,0.1)] border-white/40 relative overflow-hidden bg-white/80">
+                            <div className="flex flex-col md:flex-row items-center gap-16">
+                                <div className="flex-[1.5]">
                                     <motion.div
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.2 }}
                                     >
-                                        <span className="text-earth-600 font-bold tracking-widest uppercase text-sm mb-4 block">
+                                        <span className="text-earth-600 font-black tracking-[0.3em] uppercase text-xl mb-6 block">
                                             Slide {currentSlide + 1} of {slides.length}
                                         </span>
-                                        <h1 className="text-5xl md:text-7xl font-black text-earth-900 mb-6 leading-tight">
+                                        <h1 className="text-7xl md:text-9xl font-black text-earth-900 mb-8 leading-[0.9] tracking-tighter">
                                             {slide.title}
                                         </h1>
-                                        <p className="text-2xl text-earth-600 mb-8 font-medium">
+                                        <p className="text-4xl text-earth-700 mb-12 font-bold leading-tight max-w-3xl">
                                             {slide.subtitle}
                                         </p>
 
@@ -240,13 +247,13 @@ export default function PitchDeckPage() {
                                         )}
 
                                         {slide.details && (
-                                            <div className="space-y-4">
+                                            <div className="grid grid-cols-1 gap-8">
                                                 {slide.details.map((d, i) => (
-                                                    <div key={i} className="flex gap-4 p-4 bg-white/40 rounded-xl border border-white/20">
-                                                        <div className="text-earth-500 flex-shrink-0">{d.icon}</div>
-                                                        <div>
-                                                            <div className="font-bold text-earth-900 leading-none mb-1">{d.title}</div>
-                                                            <div className="text-sm text-earth-600 leading-tight">{d.desc}</div>
+                                                    <div key={i} className="flex gap-8 p-8 bg-white/60 backdrop-blur-md rounded-[2rem] border border-white/40 shadow-sm hover:shadow-xl hover:bg-white/90 transition-all duration-500 group">
+                                                        <div className="text-earth-600 flex-shrink-0 scale-[1.8] mt-2 group-hover:scale-[2] transition-transform">{d.icon}</div>
+                                                        <div className="pl-4">
+                                                            <div className="font-black text-earth-900 text-3xl mb-2">{d.title}</div>
+                                                            <div className="text-2xl text-earth-700 leading-relaxed font-medium">{d.desc}</div>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -254,23 +261,34 @@ export default function PitchDeckPage() {
                                         )}
 
                                         {slide.features_detailed && (
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-2 gap-8">
                                                 {slide.features_detailed.map((f, i) => (
-                                                    <div key={i} className="bg-white/50 p-4 rounded-xl border border-white/20">
-                                                        <div className="text-earth-500 mb-2">{f.icon}</div>
-                                                        <h3 className="font-bold text-earth-900 text-sm mb-1">{f.name}</h3>
-                                                        <div className="text-[10px] font-bold text-red-500 uppercase tracking-tighter mb-1">Solves: {f.solving}</div>
-                                                        <p className="text-xs text-earth-600">{f.impact}</p>
+                                                    <div key={i} className="bg-white/60 p-8 rounded-[2.5rem] border border-white/40 shadow-sm hover:bg-white/90 transition-all duration-500">
+                                                        <div className="text-earth-700 mb-6 scale-[2] origin-left">{f.icon}</div>
+                                                        <h3 className="font-black text-earth-900 text-3xl mb-3">{f.name}</h3>
+                                                        <div className="text-sm font-black text-red-600 uppercase tracking-widest mb-4 bg-red-100 px-3 py-1 rounded-full w-fit">Solves: {f.solving}</div>
+                                                        <p className="text-2xl text-earth-700 font-medium leading-relaxed">{f.impact}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {slide.stats && (
+                                            <div className="grid grid-cols-2 gap-8">
+                                                {slide.stats.map((s, i) => (
+                                                    <div key={i} className="bg-white/60 p-10 rounded-[2.5rem] border border-white/40 text-center shadow-sm hover:shadow-xl transition-all duration-500">
+                                                        <div className="text-7xl font-black text-earth-900 mb-2">{s.value}</div>
+                                                        <div className="text-xl font-black text-earth-500 uppercase tracking-[0.2em]">{s.label}</div>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
 
                                         {slide.market_details && (
-                                            <div className="space-y-2">
+                                            <div className="grid grid-cols-1 gap-6 mt-6">
                                                 {slide.market_details.map((m, i) => (
-                                                    <div key={i} className="flex items-center gap-2 text-sm text-earth-700">
-                                                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                                    <div key={i} className="flex items-center gap-6 text-3xl text-earth-800 font-bold">
+                                                        <CheckCircle2 className="w-8 h-8 text-green-600 flex-shrink-0" />
                                                         {m}
                                                     </div>
                                                 ))}
@@ -284,15 +302,17 @@ export default function PitchDeckPage() {
                                         )}
 
                                         {slide.transformation && (
-                                            <div className="mt-8 space-y-3">
-                                                <div className="text-xs font-black text-earth-400 uppercase tracking-widest text-center mb-4">The Bhumi Transformation</div>
-                                                {slide.transformation.map((t: any, i: number) => (
-                                                    <div key={i} className="flex items-center justify-between text-sm">
-                                                        <span className="text-red-400 font-medium line-through decoration-red-400/50">{t.before}</span>
-                                                        <ChevronRight className="w-4 h-4 text-earth-300" />
-                                                        <span className="text-green-600 font-black">{t.after}</span>
-                                                    </div>
-                                                ))}
+                                            <div className="mt-10 p-8 bg-white/40 rounded-3xl border border-white/60 backdrop-blur-lg">
+                                                <div className="text-xs font-black text-earth-500 uppercase tracking-widest text-center mb-6">Execution Strategy</div>
+                                                <div className="space-y-4">
+                                                    {slide.transformation.map((t: any, i: number) => (
+                                                        <div key={i} className="flex items-center justify-between text-lg font-bold">
+                                                            <span className="text-red-500/60 line-through decoration-2">{t.before}</span>
+                                                            <div className="flex-1 border-b-2 border-dashed border-earth-300 mx-6 opacity-30" />
+                                                            <span className="text-green-700">{t.after}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         )}
 

@@ -18,8 +18,8 @@ const FeatureCard = ({ icon: Icon, title, desc, color }: any) => (
     </div>
     <h3 className="text-xl font-bold text-earth-900 mb-3 group-hover:text-bhumi-dark transition-colors">{title}</h3>
     <p className="text-earth-800/60 leading-relaxed mb-6 font-medium">{desc}</p>
-    <div className="flex items-center text-sm font-bold tracking-tight text-bhumi-dark opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
-      EXPLORE CAPABILITIES <ChevronRight className="w-4 h-4 ml-1" />
+    <div className="flex items-center text-base font-bold tracking-tight text-bhumi-dark opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
+      EXPLORE CAPABILITIES <ChevronRight className="w-5 h-5 ml-1" />
     </div>
   </motion.div>
 );
@@ -28,15 +28,15 @@ export default function HomePage() {
   const { user } = useAuth();
 
   return (
-    <div className="space-y-32">
+    <div className="space-y-40">
       {/* 1. HERO SECTION - The "First Impression" */}
       <section className="relative text-center max-w-5xl mx-auto py-20">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bhumi-primary/10 border border-bhumi-primary/20 text-bhumi-dark text-xs font-black tracking-widest mb-10"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-bhumi-primary/10 border border-bhumi-primary/20 text-bhumi-dark text-sm font-black tracking-widest mb-10"
         >
-          <Zap className="w-3 h-3 fill-bhumi-primary" /> NEXT-GEN RURAL INTELLIGENCE
+          <Zap className="w-4 h-4 fill-bhumi-primary" /> NEXT-GEN RURAL INTELLIGENCE
         </motion.div>
 
         <motion.h1
@@ -51,7 +51,7 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-xl text-earth-800/60 font-medium max-w-2xl mx-auto leading-relaxed mb-12"
+          className="text-2xl text-earth-800/60 font-medium max-w-3xl mx-auto leading-relaxed mb-12"
         >
           An AI-first platform dedicated to field survey verification, automated scheme advisory, and granular rural analytics.
         </motion.p>
@@ -113,8 +113,8 @@ export default function HomePage() {
             { label: 'Data Points', value: '2.4M' }
           ].map((stat, i) => (
             <div key={i} className="text-center lg:text-left">
-              <div className="text-4xl font-black text-earth-900 mb-2 tracking-black">{stat.value}</div>
-              <div className="text-xs font-black text-earth-800/40 uppercase tracking-[0.2em]">{stat.label}</div>
+              <div className="text-5xl font-black text-earth-900 mb-2 tracking-black">{stat.value}</div>
+              <div className="text-sm font-black text-earth-800/40 uppercase tracking-[0.2em]">{stat.label}</div>
             </div>
           ))}
         </div>

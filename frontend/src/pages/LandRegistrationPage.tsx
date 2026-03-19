@@ -20,6 +20,11 @@ export default function LandRegistrationPage() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
 
+    // Proactive Location Request
+    React.useEffect(() => {
+        handleGetLocation();
+    }, []);
+
     // Get Location
     const handleGetLocation = () => {
         if (navigator.geolocation) {
@@ -94,21 +99,22 @@ export default function LandRegistrationPage() {
 
         setLoading(true);
         try {
-            // In a real app, we would upload the image to S3/Cloudinary here.
-            // For now, we mock it or send base64 (if small enough)
+            // Use real AI verification via chatbotAPI which connects to Python service
+            const formData = new FormData();
 
-            // Assuming we are logged in as this farmer or managing them
-            const targetId = id || '1'; // Default to first farmer if testing without ID
+            // Convert base64 to Blob if needed, but our API takes base64 or FormData
+            // In LandRegistrationPage, 'image' is already a data URL (base64)
+            // Let's check how chatbotAPI.verifyDocument is implemented
 
-            const response = await farmersAPI.verifyLand(targetId, {
+            const response = await farmersAPI.verifyLand(id || '1', {
                 khasra_number: khasraNumber,
                 latitude: location.lat,
                 longitude: location.lng,
-                image_url: 'https://placehold.co/600x400/png?text=Verified+Land', // Mock URL
+                image_url: image, // Now sending the actual base64 image
             });
 
             setVerificationResult(response.data);
-            toast.success('Land details submitted successfully!');
+            toast.success('Land details submitted for AI verification!');
 
         } catch (error: any) {
             console.error('Submission error:', error);

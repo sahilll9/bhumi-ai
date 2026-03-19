@@ -1,5 +1,5 @@
 # 🎯 START HERE - How to Run Your Project
-
+.\start-all.ps1
 ## ✅ What's Already Done
 - ✅ All code is written
 - ✅ Dependencies installed (backend & frontend)
