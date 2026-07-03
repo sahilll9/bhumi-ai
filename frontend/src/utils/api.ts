@@ -47,7 +47,7 @@ export const schemesAPI = {
 
 // Chatbot API
 export const chatbotAPI = {
-  chat: (data: { message: string; language?: string; farmer_id?: number; village_id?: number }) =>
+  chat: (data: { message: string; language?: string; farmer_id?: number; village_id?: number; mode?: string; model?: string; apiKey?: string; }) =>
     api.post('/chatbot/chat', data),
   verifyDocument: (formData: FormData) =>
     api.post('/chatbot/verify-document', formData, {

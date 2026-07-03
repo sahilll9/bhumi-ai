@@ -18,14 +18,14 @@ param(
 
 # Colors for output
 function Write-Step { param($msg) Write-Host "`n>>> $msg" -ForegroundColor Cyan }
-function Write-Success { param($msg) Write-Host "✓ $msg" -ForegroundColor Green }
-function Write-Error { param($msg) Write-Host "✗ $msg" -ForegroundColor Red }
-function Write-Info { param($msg) Write-Host "ℹ $msg" -ForegroundColor Yellow }
+function Write-Success { param($msg) Write-Host "[+] $msg" -ForegroundColor Green }
+function Write-Error { param($msg) Write-Host "[-] $msg" -ForegroundColor Red }
+function Write-Info { param($msg) Write-Host "[i] $msg" -ForegroundColor Yellow }
 
 Write-Host @"
-╔═══════════════════════════════════════════════════════════╗
-║         BHUMI AI PLATFORM - STARTING ALL SERVICES         ║
-╚═══════════════════════════════════════════════════════════╝
+===========================================================
+         BHUMI AI PLATFORM - STARTING ALL SERVICES         
+===========================================================
 "@ -ForegroundColor Green
 
 # Step 1: Check if .env files exist, create if missing
@@ -178,14 +178,14 @@ Write-Host @"
 ║              ALL SERVICES STARTED SUCCESSFULLY!           ║
 ╚═══════════════════════════════════════════════════════════╝
 
-📱 Frontend:    http://localhost:3000
-🔧 Backend:     http://localhost:8000
-🤖 AI Service:  http://localhost:5000
-🗄️  Database:    PostgreSQL (Docker) on port 5432
+- Frontend:    http://localhost:3000
+- Backend:     http://localhost:8000
+- AI Service:  http://localhost:5000
+- Database:    PostgreSQL (Docker) on port 5432
 
-💡 TIP: Open http://localhost:3000 in your browser to see the app!
+TIP: Open http://localhost:3000 in your browser to see the app!
 
-🛑 To stop all services:
+To stop all services:
    - Close the PowerShell windows
    - Run: docker-compose down (to stop database)
 

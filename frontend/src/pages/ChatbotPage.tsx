@@ -41,6 +41,11 @@ export default function ChatbotPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  // Online/Offline Mode State
+  const [mode, setMode] = useState<'online' | 'offline'>('online');
+  const [model, setModel] = useState<string>('llama');
+  const [apiKey, setApiKey] = useState<string>('');
+
   // Keyboard State
   const [showKeyboard, setShowKeyboard] = useState(false);
   const keyboard = useRef<any>(null);
@@ -147,7 +152,10 @@ export default function ChatbotPage() {
     try {
       const response = await chatbotAPI.chat({
         message: input,
-        language
+        language,
+        mode,
+        model,
+        apiKey
       });
 
       const assistantMessage: Message = {
@@ -212,32 +220,71 @@ export default function ChatbotPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-10 h-[calc(100vh-200px)] flex flex-col">
       {/* Dynamic Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 px-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-4">
         <div>
           <h1 className="text-3xl font-black text-earth-900 tracking-tighter flex items-center gap-3">
             <Sparkles className="w-6 h-6 text-bhumi-primary" /> {language === 'hi' ? 'बहुभाषी एआई' : language === 'te' ? 'బహుభాషా AI' : language === 'ta' ? 'பன்மொழி AI' : 'Multi-Lingual AI'}
           </h1>
-          <p className="text-earth-800/60 font-medium">
+          <p className="text-earth-800/60 font-medium mb-4 md:mb-0">
             {language === 'hi' ? '12+ बोलियों में इंटरैक्टिव योजना सलाहकार' : 'Interactive scheme advisory across 12+ dialects'}
           </p>
         </div>
 
-        {/* Premium Language Selector */}
-        <div className="glass-card !bg-white/40 px-4 py-2 flex items-center gap-3 rounded-2xl border-white/60">
-          <Languages className="w-5 h-5 text-earth-800/30" />
-          <select
-            value={language}
-            onChange={(e) => {
-              setLanguage(e.target.value as any);
-              if (e.target.value !== 'hi') setShowKeyboard(false);
-            }}
-            className="bg-transparent text-sm font-black outline-none cursor-pointer text-earth-900"
-          >
-            <option value="en">English (Global)</option>
-            <option value="hi">हिंदी (Bharat)</option>
-            <option value="te">తెలుగు (Telangana)</option>
-            <option value="ta">தமிழ் (Tamil Nadu)</option>
-          </select>
+        <div className="flex flex-wrap gap-3 items-center w-full md:w-auto">
+          {/* Mode Toggle */}
+          <div className="glass-card !bg-white/40 px-4 py-2 flex items-center gap-3 rounded-2xl border-white/60">
+            <span className="text-sm font-bold text-earth-900">{mode === 'online' ? 'Online' : 'Offline'}</span>
+            <button
+              onClick={() => setMode(mode === 'online' ? 'offline' : 'online')}
+              className={`w-10 h-6 rounded-full p-1 transition-colors flex items-center ${mode === 'online' ? 'bg-bhumi-primary' : 'bg-earth-300'}`}
+            >
+              <div className={`w-4 h-4 rounded-full bg-white transition-transform ${mode === 'online' ? 'translate-x-4' : 'translate-x-0'}`} />
+            </button>
+          </div>
+
+          {/* Model Selector (Visible only in Online Mode) */}
+          {mode === 'online' && (
+            <div className="glass-card !bg-white/40 px-4 py-2 flex flex-col sm:flex-row items-start sm:items-center gap-3 rounded-2xl border-white/60">
+              <select
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                className="bg-transparent text-sm font-black outline-none cursor-pointer text-earth-900"
+              >
+                <option value="llama">Llama 3.3 (Groq)</option>
+                <option value="chatgpt">ChatGPT (OpenAI)</option>
+                <option value="claude">Claude (Anthropic)</option>
+                <option value="custom">Custom Model</option>
+              </select>
+              
+              {(model === 'chatgpt' || model === 'claude' || model === 'custom') && (
+                <input
+                  type="password"
+                  placeholder="API Key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="bg-white/50 border border-white/60 rounded-xl px-3 py-1 text-xs outline-none focus:ring-2 focus:ring-bhumi-primary/50 w-full sm:w-32"
+                />
+              )}
+            </div>
+          )}
+
+          {/* Premium Language Selector */}
+          <div className="glass-card !bg-white/40 px-4 py-2 flex items-center gap-3 rounded-2xl border-white/60">
+            <Languages className="w-5 h-5 text-earth-800/30" />
+            <select
+              value={language}
+              onChange={(e) => {
+                setLanguage(e.target.value as any);
+                if (e.target.value !== 'hi') setShowKeyboard(false);
+              }}
+              className="bg-transparent text-sm font-black outline-none cursor-pointer text-earth-900"
+            >
+              <option value="en">English (Global)</option>
+              <option value="hi">हिंदी (Bharat)</option>
+              <option value="te">తెలుగు (Telangana)</option>
+              <option value="ta">தமிழ் (Tamil Nadu)</option>
+            </select>
+          </div>
         </div>
       </div>
 
